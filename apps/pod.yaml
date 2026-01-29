@@ -3,9 +3,12 @@ kind: Pod
 metadata:
   name: httpd
   namespace: apps
+  label:
+    app.kubernetes.io/name: httpd
 spec:
   containers:
   - name: httpd
     image: httpd
     ports:
     - containerPort: 80
+

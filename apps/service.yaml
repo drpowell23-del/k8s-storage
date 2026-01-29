@@ -3,7 +3,9 @@ kind: Service
 metadata:
   name: httpd-service
   namespace: apps
+  # dns name should be httpd-service.apps.svc.cluster.local
 spec:
+  type: LoadBalancer
   selector:
     app.kubernetes.io/name: httpd
   ports:

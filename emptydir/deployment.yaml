@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hello
+  template:
+    metadata:
+      labels:
+        app: hello
+    spec:
+      restartPolicy: OnFailure
+
+      containers:
+      - name: busywriter
+        image: busybox:1.28
+        command:
+          - sh
+          - -c
+          - |
+            while true; do
+              echo "Hello, Kubernetes! $(date)" >> /data/out.txt
+              sleep 5
+            done
+        volumeMounts:
+          - name: file-share
+            mountPath: /data
+
+      - name: busyreader
+        image: busybox:1.28
+        command:
+          - sh
+          - -c
+          - |
+            while true; do
+              tail -f /read/out.txt || true
+              sleep 5
+            done
+        volumeMounts:
+          - name: file-share
+            mountPath: /read
+
+      volumes:
+      - name: file-share
+        emptyDir:
+          sizeLimit: 500Mi
+          medium: Memory

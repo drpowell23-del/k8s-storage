@@ -7,7 +7,7 @@ spec:
     matchLabels:
       app: database # has to match .spec.template.metadata.labels
   serviceName: "database"
-  replicas: 3 # by default is 1
+  replicas: 1
   minReadySeconds: 10 # by default is 0
   template:
     metadata:
@@ -24,12 +24,8 @@ spec:
         volumeMounts:
         - name: data
           mountPath: /var/lib/mysql
-  volumeClaimTemplates:
-  - metadata:
-      name: data
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      storageClassName: "my-storage-class"
-      resources:
-        requests:
-          storage: 1Gi
+
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: mysql-pvc
